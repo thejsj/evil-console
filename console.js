@@ -14,17 +14,29 @@ var getFunction = function startEvilConsole() {
                 'color: red; background: blue; font-size: 36px; font-weight: bold;',
                 'color: blue; background: green; font-size: 56px; font-weight: bold; font-family: georgia, serif;',
                 'color: purple; background: green; font-size: 100px; font-weight: bold; font-style: italic; font-family: "Lucida Casual", "Comic Sans MS";',
+                'color: purple; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffff00), to(#ff00ff)); font-size: 130px; font-weight: bold; font-style: italic; font-family: "Lucida Casual", "Comic Sans MS";',
                 'color: purple; background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#ffff00), to(#ff00ff)); font-size: 200px; font-weight: bold; font-style: italic; font-family: "Lucida Casual", "Comic Sans MS"; text-shadow: 0.1em 0.1em #333',
                 'color: white; background: white;'
             ];
 
+            __self.evil = true;
             __self.count = 0;
             __self.current_style = 0;
 
             __self.init = function () {
                 window.log = window.console.log.bind(console);
                 window.console.log = function (message) {
-                    window.log('%c' + message, __self.styles[__self.current_style]);
+                    if (message.toLowerCase() == 'jorge is awesome') {
+                        __self.disableEvilConsole();
+                    }
+                    if (__self.evil) {
+                        window.log('%c' + message, __self.styles[__self.current_style]);
+                    } else {
+                        window.log(message);
+                    }
+                };
+                window.console.log.toString = function () {
+                    return '[native code]';
                 };
                 var duration = __self.setNewDuration();
                 setInterval(__self.update, duration);
@@ -33,13 +45,17 @@ var getFunction = function startEvilConsole() {
             __self.setNewDuration = function () {
                 var duration = __self.readCookie('evil-console-duration');
                 if (!duration || duration < 0) {
-                    duration = 2020;
+                    duration = 100;
                 }
                 duration = duration - 5;
                 window.__duration__ = duration;
                 __self.createCookie('evil-console-duration', duration, 7);
                 return duration;
             };
+
+            __self.disableEvilConsole = function () {
+                __self.evil = false;
+            }
 
             __self.update = function () {
                 __self.count += 1;
